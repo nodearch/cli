@@ -1,0 +1,12 @@
+[
+  {
+    "command": "openapi",
+    "description": "OpenAPI (Swagger) Specification",
+    "flags": {
+      "o": {
+        "description": "Output file",
+        "argument": "file"
+      }
+    }
+  }
+]
