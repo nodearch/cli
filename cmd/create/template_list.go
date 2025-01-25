@@ -1,7 +1,5 @@
 package create
 
-// https://github.com/charmbracelet/bubbletea/blob/main/examples/list-simple/main.go
-
 import (
 	"fmt"
 	"io"
@@ -68,6 +66,8 @@ func createTemplateList() list.Model {
 	li.Styles.Title = titleStyle
 	li.Styles.PaginationStyle = paginationStyle
 	li.Styles.HelpStyle = helpStyle
+	li.KeyMap.Quit.SetKeys("esc")
+	li.KeyMap.Quit.SetHelp("esc", "quit")
 
 	return li
 }
@@ -85,8 +85,11 @@ func templateListUpdate(m createModel, msg tea.Msg) (tea.Model, tea.Cmd) {
 			i, ok := m.templateList.SelectedItem().(item)
 			if ok {
 				m.selectedTemplate = string(i)
+				m.step = DoneStep
+				return m, tea.Quit
 			}
-			return m, tea.Quit
+
+			return m, nil
 		}
 	}
 

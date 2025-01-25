@@ -25,10 +25,10 @@ func projectNameUpdate(m createModel, msg tea.Msg) (tea.Model, tea.Cmd) {
 		case tea.KeyEnter:
 			if m.projectName.Value() == "" {
 				m.err = fmt.Errorf("project name cannot be empty")
-				m.quitting = true
+				m.step = ExitStep
 				return m, tea.Quit
 			} else {
-				m.step = "templateList"
+				m.step = TemplateListStep
 				return m, nil
 			}
 		}

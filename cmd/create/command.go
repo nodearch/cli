@@ -21,7 +21,7 @@ func initialModel() createModel {
 		projectName:  projectNameInput,
 		templateList: templateList,
 		err:          nil,
-		step:         "projectName",
+		step:         ProjectNameStep,
 	}
 }
 
@@ -35,13 +35,13 @@ func (m createModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	if ok {
 		keypress := massage.String()
 
-		if keypress == "ctrl+c" || keypress == "q" || keypress == "esc" {
-			m.quitting = true
+		if keypress == "ctrl+c" || keypress == "esc" {
+			m.step = "exit"
 			return m, tea.Quit
 		}
 	}
 
-	if m.step == "projectName" {
+	if m.step == ProjectNameStep {
 		return projectNameUpdate(m, msg)
 	} else if m.step == "templateList" {
 		return templateListUpdate(m, msg)
@@ -51,10 +51,15 @@ func (m createModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 func (m createModel) View() string {
-	if m.step == "projectName" {
+	if m.step == ProjectNameStep {
 		return projectNameView(m)
 	} else if m.step == "templateList" {
 		return templateListView(m)
+	} else if m.step == "exit" {
+		if m.err != nil {
+			return quitTextStyle.Render(fmt.Sprintf("Error: %v", m.err))
+		}
+		return quitTextStyle.Render("Quitting...")
 	} else {
 		return ""
 	}
@@ -75,16 +80,9 @@ var Command = &cobra.Command{
 
 		m := finalModel.(createModel)
 
-		if m.err != nil {
-			fmt.Println(quitTextStyle.Render(fmt.Sprintf("Error: %v", m.err)))
-			os.Exit(1)
+		if m.step == "done" {
+			handler(m)
 		}
 
-		if m.quitting {
-			fmt.Println(quitTextStyle.Render("Quitting..."))
-			os.Exit(0)
-		}
-
-		handler(m)
 	},
 }

@@ -9,7 +9,15 @@ type createModel struct {
 	projectName      textinput.Model
 	templateList     list.Model
 	selectedTemplate string
-	step             string
-	quitting         bool
+	step             StepName
 	err              error
 }
+
+type StepName string
+
+const (
+	ProjectNameStep  StepName = "projectName"
+	TemplateListStep StepName = "templateList"
+	ExitStep         StepName = "exit"
+	DoneStep         StepName = "done"
+)
